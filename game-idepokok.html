@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Literasi: Detektif Ide Pokok</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; color: #333; display: flex; justify-content: center; padding: 20px; }
+        .container { max-width: 600px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; font-size: 24px; }
+        .progress-bar { height: 10px; background: #e0e0e0; border-radius: 5px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #3498db; width: 0%; transition: width 0.5s; }
+        .paragraf-box { background: #fff9c4; padding: 15px; border-left: 5px solid #fbc02d; margin-bottom: 20px; line-height: 1.6; font-style: italic; }
+        .pilihan-container { display: grid; gap: 10px; }
+        button { padding: 12px; border: 2px solid #3498db; background: white; border-radius: 8px; cursor: pointer; transition: 0.3s; text-align: left; font-size: 15px; }
+        button:hover { background: #3498db; color: white; }
+        .feedback { margin-top: 15px; font-weight: bold; text-align: center; }
+        .hidden { display: none; }
+        .congrats { text-align: center; color: #27ae60; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🔍 Detektif Ide Pokok</h1>
+    <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
+    
+    <div id="game-zone">
+        <p id="instruksi">Baca paragraf di bawah dan temukan <b>Ide Pokoknya</b>!</p>
+        <div id="paragraf" class="paragraf-box"></div>
+        <div id="pilihan" class="pilihan-container"></div>
+        <div id="feedback" class="feedback"></div>
+    </div>
+
+    <div id="finish-zone" class="hidden">
+        <div class="congrats">
+            <h2>Selamat, Detektif! 🎉</h2>
+            <p>Bapak/Ibu Guru, siswa Anda telah berhasil memecahkan semua teka-teki ide pokok dalam cerita "Kunci Rahasia Perpustakaan Tua".</p>
+            <button onclick="location.reload()" style="text-align:center">Main Lagi</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const dataGame = [
+        {
+            paragraf: "Di sebuah kota kecil yang tenang, terdapat sebuah perpustakaan tua yang dindingnya tertutup tanaman merambat. Aris, seorang pemuda yang gemar membaca, sering menghabiskan waktunya di sana untuk mencari buku-buku langka. Suatu sore, ia menemukan sebuah buku bersampul kulit hitam tanpa judul yang tampak sangat berbeda.",
+            pilihan: ["Tanaman merambat di perpustakaan", "Aris menemukan buku misterius di perpustakaan tua", "Cara Aris membersihkan debu"],
+            jawaban: 1
+        },
+        {
+            paragraf: "Rasa penasaran membawa Aris membuka halaman pertama buku tersebut. Alih-alih tulisan tinta biasa, lembarannya memancarkan cahaya biru redup yang membentuk kode digital. Di tengah halaman, tertulis instruksi: 'Carilah tiga kata yang hilang di dunia maya'. Aris menyadari buku ini adalah sebuah gerbang teka-teki.",
+            pilihan: ["Buku misterius itu berisi instruksi teka-teki digital", "Cahaya biru di halaman buku", "Aris merasa sangat ketakutan"],
+            jawaban: 0
+        },
+        {
+            paragraf: "Tanpa membuang waktu, Aris segera mengeluarkan laptopnya dan mulai menelusuri arsip digital kota. Ia menyadari bahwa perpustakaan itu dulunya pusat komunikasi rahasia. Kode di buku ternyata koordinat GPS rujukan sebuah situs web kuno. Jarinya menari cepat di papan ketik memecahkan enkripsi.",
+            pilihan: ["Aris membeli laptop baru", "Aris memecahkan kode melalui penelusuran arsip digital", "Sejarah masa perang di kota kecil"],
+            jawaban: 1
+        },
+        {
+            paragraf: "Setelah berjam-jam, muncul pesan: 'Keberanian adalah kunci, namun ketelitian adalah peta'. Aris teringat simbol tua yang terpahat di pintu masuk perpustakaan. Ia memasukkan simbol itu sebagai kata sandi. Tiba-tiba, sebuah laci rahasia terbuka memperlihatkan kunci emas kecil dan peta tua.",
+            pilihan: ["Simbol di pintu masuk", "Keberhasilan Aris membuka laci rahasia dengan kata sandi", "Laci yang terbuat dari kayu tua"],
+            jawaban: 1
+        },
+        {
+            paragraf: "Aris tersenyum puas sambil memegang kunci tersebut. Ia belajar bahwa pengetahuan masa lalu dan teknologi masa kini bisa bersatu mengungkap kebenaran. Petualangannya baru saja dimulai, dan setiap paragraf hidupnya kini akan dipenuhi misteri yang menunggu dipecahkan.",
+            pilihan: ["Aris berhenti membaca buku", "Pelajaran tentang bersatunya pengetahuan lama dan teknologi", "Kunci emas yang sangat mahal"],
+            jawaban: 1
+        }
+    ];
+
+    let step = 0;
+
+    function loadStep() {
+        if(step >= dataGame.length) {
+            document.getElementById('game-zone').classList.add('hidden');
+            document.getElementById('finish-zone').classList.remove('hidden');
+            return;
+        }
+
+        document.getElementById('progress').style.width = (step / dataGame.length * 100) + "%";
+        document.getElementById('paragraf').innerText = dataGame[step].paragraf;
+        const pilihanDiv = document.getElementById('pilihan');
+        pilihanDiv.innerHTML = "";
+        
+        dataGame[step].pilihan.forEach((pil, index) => {
+            const btn = document.createElement('button');
+            btn.innerText = pil;
+            btn.onclick = () => cekJawaban(index);
+            pilihanDiv.appendChild(btn);
+        });
+        document.getElementById('feedback').innerText = "";
+    }
+
+    function cekJawaban(idx) {
+        const fb = document.getElementById('feedback');
+        if(idx === dataGame[step].jawaban) {
+            fb.innerHTML = "<span style='color:green'>Tepat Sekali! Lanjut...</span>";
+            step++;
+            setTimeout(loadStep, 1000);
+        } else {
+            fb.innerHTML = "<span style='color:red'>Kurang Tepat, coba baca lagi kalimat utamanya!</span>";
+        }
+    }
+
+    loadStep();
+</script>
+
+</body>
+</html>
