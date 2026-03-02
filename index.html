@@ -3,40 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Literasi: Detektif Ide Pokok</title>
+    <title>Pembelajaran Ide Pokok - Pak Kiswanto</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; color: #333; display: flex; justify-content: center; padding: 20px; }
-        .container { max-width: 600px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; text-align: center; font-size: 24px; }
-        .progress-bar { height: 10px; background: #e0e0e0; border-radius: 5px; margin-bottom: 20px; overflow: hidden; }
-        .progress-fill { height: 100%; background: #3498db; width: 0%; transition: width 0.5s; }
-        .paragraf-box { background: #fff9c4; padding: 15px; border-left: 5px solid #fbc02d; margin-bottom: 20px; line-height: 1.6; font-style: italic; }
-        .pilihan-container { display: grid; gap: 10px; }
-        button { padding: 12px; border: 2px solid #3498db; background: white; border-radius: 8px; cursor: pointer; transition: 0.3s; text-align: left; font-size: 15px; }
-        button:hover { background: #3498db; color: white; }
-        .feedback { margin-top: 15px; font-weight: bold; text-align: center; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f4f8; padding: 20px; color: #333; }
+        .wrapper { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+        .step { margin-bottom: 30px; padding: 20px; border-left: 6px solid #3498db; background: #f9fcff; border-radius: 0 10px 10px 0; }
+        h2 { color: #2980b9; margin-top: 0; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 20px 0; box-shadow: 0 3px 10px rgba(0,0,0,0.2); border-radius: 10px; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        
+        /* Style Game */
+        #game-section { background: #fffbe6; padding: 25px; border: 2px dashed #f1c40f; border-radius: 15px; text-align: center; }
+        .paragraf-box { background: white; padding: 20px; border: 1px solid #ddd; margin: 15px 0; border-radius: 10px; font-style: italic; text-align: left; line-height: 1.6; }
+        .btn-pilihan { display: block; width: 100%; padding: 12px; margin: 10px 0; background: white; border: 2px solid #3498db; border-radius: 8px; cursor: pointer; transition: 0.3s; text-align: left; }
+        .btn-pilihan:hover { background: #3498db; color: white; }
+        .feedback { font-weight: bold; margin-top: 15px; height: 20px; }
         .hidden { display: none; }
-        .congrats { text-align: center; color: #27ae60; }
+        #btn-start { background: #27ae60; color: white; padding: 15px 40px; border: none; font-size: 18px; border-radius: 50px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="wrapper">
     <h1>🔍 Detektif Ide Pokok</h1>
-    <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
-    
-    <div id="game-zone">
-        <p id="instruksi">Baca paragraf di bawah dan temukan <b>Ide Pokoknya</b>!</p>
-        <div id="paragraf" class="paragraf-box"></div>
-        <div id="pilihan" class="pilihan-container"></div>
-        <div id="feedback" class="feedback"></div>
+
+    <div class="step">
+        <h2>1. Memahami Konsep</h2>
+        <p>Halo Calon Detektif! Sebelum beraksi, ingatlah: <b>Ide Pokok</b> adalah inti atau masalah utama yang dibahas dalam sebuah paragraf. Ide pokok biasanya bersembunyi di dalam <b>Kalimat Utama</b>.</p>
     </div>
 
-    <div id="finish-zone" class="hidden">
-        <div class="congrats">
-            <h2>Selamat, Detektif! 🎉</h2>
-            <p>Bapak/Ibu Guru, siswa Anda telah berhasil memecahkan semua teka-teki ide pokok dalam cerita "Kunci Rahasia Perpustakaan Tua".</p>
-            <button onclick="location.reload()" style="text-align:center">Main Lagi</button>
+    <div class="step">
+        <h2>2. Tonton Video Penjelasan</h2>
+        <p>Simak penjelasan seru tentang cara menemukan ide pokok di bawah ini:</p>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/7ueenx78ta4" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>3. Latihan Gamifikasi</h2>
+        <p>Sudah siap? Bantu Aris memecahkan misteri perpustakaan dengan menemukan ide pokok yang tepat!</p>
+        
+        <div id="game-section">
+            <button id="btn-start" onclick="mulaiGame()">MULAI TANTANGAN</button>
+            
+            <div id="game-content" class="hidden">
+                <div id="paragraf-display" class="paragraf-box"></div>
+                <div id="pilihan-display"></div>
+                <div id="feedback-display" class="feedback"></div>
+            </div>
+
+            <div id="finish-display" class="hidden">
+                <h2 style="color: #27ae60;">🎉 Misi Selesai!</h2>
+                <p>Luar biasa! Kamu telah berhasil membantu Aris dan menguasai konsep Ide Pokok.</p>
+                <button onclick="location.reload()">Main Lagi</button>
+            </div>
         </div>
     </div>
 </div>
@@ -44,67 +66,61 @@
 <script>
     const dataGame = [
         {
-            paragraf: "Di sebuah kota kecil yang tenang, terdapat sebuah perpustakaan tua yang dindingnya tertutup tanaman merambat. Aris, seorang pemuda yang gemar membaca, sering menghabiskan waktunya di sana untuk mencari buku-buku langka. Suatu sore, ia menemukan sebuah buku bersampul kulit hitam tanpa judul yang tampak sangat berbeda.",
-            pilihan: ["Tanaman merambat di perpustakaan", "Aris menemukan buku misterius di perpustakaan tua", "Cara Aris membersihkan debu"],
+            p: "Di sebuah kota kecil yang tenang, terdapat sebuah perpustakaan tua yang dindingnya tertutup tanaman merambat. Aris, seorang pemuda yang gemar membaca, sering menghabiskan waktunya di sana untuk mencari buku-buku langka. Suatu sore, ia menemukan sebuah buku bersampul kulit hitam tanpa judul yang tampak sangat berbeda.",
+            opsi: ["Tanaman merambat di gedung tua", "Aris menemukan buku misterius di perpustakaan", "Cara merawat perpustakaan tua"],
             jawaban: 1
         },
         {
-            paragraf: "Rasa penasaran membawa Aris membuka halaman pertama buku tersebut. Alih-alih tulisan tinta biasa, lembarannya memancarkan cahaya biru redup yang membentuk kode digital. Di tengah halaman, tertulis instruksi: 'Carilah tiga kata yang hilang di dunia maya'. Aris menyadari buku ini adalah sebuah gerbang teka-teki.",
-            pilihan: ["Buku misterius itu berisi instruksi teka-teki digital", "Cahaya biru di halaman buku", "Aris merasa sangat ketakutan"],
+            p: "Rasa penasaran membawa Aris membuka halaman pertama buku tersebut. Alih-alih tulisan tinta biasa, lembarannya memancarkan cahaya biru redup yang membentuk kode digital. Di tengah halaman, tertulis instruksi: 'Carilah tiga kata yang hilang di dunia maya'. Aris menyadari buku ini adalah sebuah gerbang teka-teki.",
+            opsi: ["Buku misterius berisi instruksi teka-teki digital", "Cahaya biru di dalam buku", "Rasa penasaran Aris"],
             jawaban: 0
         },
         {
-            paragraf: "Tanpa membuang waktu, Aris segera mengeluarkan laptopnya dan mulai menelusuri arsip digital kota. Ia menyadari bahwa perpustakaan itu dulunya pusat komunikasi rahasia. Kode di buku ternyata koordinat GPS rujukan sebuah situs web kuno. Jarinya menari cepat di papan ketik memecahkan enkripsi.",
-            pilihan: ["Aris membeli laptop baru", "Aris memecahkan kode melalui penelusuran arsip digital", "Sejarah masa perang di kota kecil"],
-            jawaban: 1
-        },
-        {
-            paragraf: "Setelah berjam-jam, muncul pesan: 'Keberanian adalah kunci, namun ketelitian adalah peta'. Aris teringat simbol tua yang terpahat di pintu masuk perpustakaan. Ia memasukkan simbol itu sebagai kata sandi. Tiba-tiba, sebuah laci rahasia terbuka memperlihatkan kunci emas kecil dan peta tua.",
-            pilihan: ["Simbol di pintu masuk", "Keberhasilan Aris membuka laci rahasia dengan kata sandi", "Laci yang terbuat dari kayu tua"],
-            jawaban: 1
-        },
-        {
-            paragraf: "Aris tersenyum puas sambil memegang kunci tersebut. Ia belajar bahwa pengetahuan masa lalu dan teknologi masa kini bisa bersatu mengungkap kebenaran. Petualangannya baru saja dimulai, dan setiap paragraf hidupnya kini akan dipenuhi misteri yang menunggu dipecahkan.",
-            pilihan: ["Aris berhenti membaca buku", "Pelajaran tentang bersatunya pengetahuan lama dan teknologi", "Kunci emas yang sangat mahal"],
-            jawaban: 1
+            p: "Tanpa membuang waktu, Aris segera mengeluarkan laptopnya dan mulai menelusuri arsip digital kota. Ia menyadari bahwa perpustakaan itu dulunya pusat komunikasi rahasia. Kode di buku ternyata koordinat GPS rujukan sebuah situs web kuno. Jarinya menari cepat di papan ketik memecahkan enkripsi.",
+            opsi: ["Aris memecahkan kode melalui penelusuran arsip digital", "Sejarah masa perang", "Kegunaan koordinat GPS"],
+            jawaban: 0
         }
     ];
 
-    let step = 0;
+    let currentStep = 0;
 
-    function loadStep() {
-        if(step >= dataGame.length) {
-            document.getElementById('game-zone').classList.add('hidden');
-            document.getElementById('finish-zone').classList.remove('hidden');
+    function mulaiGame() {
+        document.getElementById('btn-start').classList.add('hidden');
+        document.getElementById('game-content').classList.remove('hidden');
+        tampilkanSoal();
+    }
+
+    function tampilkanSoal() {
+        if(currentStep >= dataGame.length) {
+            document.getElementById('game-content').classList.add('hidden');
+            document.getElementById('finish-display').classList.remove('hidden');
             return;
         }
 
-        document.getElementById('progress').style.width = (step / dataGame.length * 100) + "%";
-        document.getElementById('paragraf').innerText = dataGame[step].paragraf;
-        const pilihanDiv = document.getElementById('pilihan');
-        pilihanDiv.innerHTML = "";
-        
-        dataGame[step].pilihan.forEach((pil, index) => {
+        document.getElementById('paragraf-display').innerText = dataGame[currentStep].p;
+        const displayOpsi = document.getElementById('pilihan-display');
+        displayOpsi.innerHTML = "";
+
+        dataGame[currentStep].opsi.forEach((teks, i) => {
             const btn = document.createElement('button');
-            btn.innerText = pil;
-            btn.onclick = () => cekJawaban(index);
-            pilihanDiv.appendChild(btn);
+            btn.className = "btn-pilihan";
+            btn.innerText = teks;
+            btn.onclick = () => cek(i);
+            displayOpsi.appendChild(btn);
         });
-        document.getElementById('feedback').innerText = "";
+        document.getElementById('feedback-display').innerText = "";
     }
 
-    function cekJawaban(idx) {
-        const fb = document.getElementById('feedback');
-        if(idx === dataGame[step].jawaban) {
-            fb.innerHTML = "<span style='color:green'>Tepat Sekali! Lanjut...</span>";
-            step++;
-            setTimeout(loadStep, 1000);
+    function cek(dipilih) {
+        const fb = document.getElementById('feedback-display');
+        if(dipilih === dataGame[currentStep].jawaban) {
+            fb.innerHTML = "<span style='color:green'>✔ Tepat sekali!</span>";
+            currentStep++;
+            setTimeout(tampilkanSoal, 1000);
         } else {
-            fb.innerHTML = "<span style='color:red'>Kurang Tepat, coba baca lagi kalimat utamanya!</span>";
+            fb.innerHTML = "<span style='color:red'>❌ Kurang tepat, ayo coba lagi!</span>";
         }
     }
-
-    loadStep();
 </script>
 
 </body>
