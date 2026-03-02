@@ -5,59 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pembelajaran Ide Pokok - Pak Kiswanto</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f4f8; padding: 20px; color: #333; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; padding: 20px; color: #333; line-height: 1.6; }
         .wrapper { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; text-align: center; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+        h1 { color: #2c3e50; text-align: center; border-bottom: 3px solid #3498db; padding-bottom: 10px; margin-bottom: 30px; }
         .step { margin-bottom: 30px; padding: 20px; border-left: 6px solid #3498db; background: #f9fcff; border-radius: 0 10px 10px 0; }
-        h2 { color: #2980b9; margin-top: 0; }
-        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 20px 0; box-shadow: 0 3px 10px rgba(0,0,0,0.2); border-radius: 10px; }
-        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        h2 { color: #2980b9; margin-top: 0; font-size: 20px; }
         
-        /* Style Game */
-        #game-section { background: #fffbe6; padding: 25px; border: 2px dashed #f1c40f; border-radius: 15px; text-align: center; }
-        .paragraf-box { background: white; padding: 20px; border: 1px solid #ddd; margin: 15px 0; border-radius: 10px; font-style: italic; text-align: left; line-height: 1.6; }
-        .btn-pilihan { display: block; width: 100%; padding: 12px; margin: 10px 0; background: white; border: 2px solid #3498db; border-radius: 8px; cursor: pointer; transition: 0.3s; text-align: left; }
+        /* Gaya Tombol Video */
+        .video-box { text-align: center; padding: 30px; background: #fff5f5; border: 2px solid #ff0000; border-radius: 15px; margin: 20px 0; }
+        .btn-youtube { background: #ff0000; color: white; padding: 15px 25px; border: none; cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 16px; text-decoration: none; display: inline-block; transition: 0.3s; }
+        .btn-youtube:hover { background: #cc0000; transform: scale(1.05); }
+
+        /* Gaya Game */
+        #game-section { background: #fffbe6; padding: 25px; border: 2px dashed #f1c40f; border-radius: 15px; text-align: center; margin-top: 20px; }
+        .paragraf-box { background: white; padding: 20px; border: 1px solid #ddd; margin: 15px 0; border-radius: 10px; font-style: italic; text-align: left; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); }
+        .btn-pilihan { display: block; width: 100%; padding: 14px; margin: 10px 0; background: white; border: 2px solid #3498db; border-radius: 10px; cursor: pointer; transition: 0.3s; text-align: left; font-size: 15px; }
         .btn-pilihan:hover { background: #3498db; color: white; }
-        .feedback { font-weight: bold; margin-top: 15px; height: 20px; }
+        .feedback { font-weight: bold; margin-top: 15px; height: 25px; font-size: 18px; }
         .hidden { display: none; }
-        #btn-start { background: #27ae60; color: white; padding: 15px 40px; border: none; font-size: 18px; border-radius: 50px; cursor: pointer; font-weight: bold; }
+        #btn-start { background: #27ae60; color: white; padding: 18px 45px; border: none; font-size: 20px; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        #btn-start:hover { background: #219150; transform: translateY(-3px); }
+        .finish-card { padding: 30px; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="wrapper">
-    <h1>🔍 Detektif Ide Pokok</h1>
+    <h1>🔍 Misi Detektif Ide Pokok</h1>
 
     <div class="step">
-        <h2>1. Memahami Konsep</h2>
-        <p>Halo Calon Detektif! Sebelum beraksi, ingatlah: <b>Ide Pokok</b> adalah inti atau masalah utama yang dibahas dalam sebuah paragraf. Ide pokok biasanya bersembunyi di dalam <b>Kalimat Utama</b>.</p>
+        <h2>Langkah 1: Pahami Konsep</h2>
+        <p>Halo Detektif! Tugasmu adalah mencari <b>Ide Pokok</b>. Ingat, ide pokok adalah inti masalah dalam sebuah paragraf. Carilah kalimat yang paling mewakili seluruh isi cerita!</p>
     </div>
 
     <div class="step">
-        <h2>2. Tonton Video Penjelasan</h2>
-        <p>Simak penjelasan seru tentang cara menemukan ide pokok di bawah ini:</p>
-        <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/7ueenx78ta4" allowfullscreen></iframe>
+        <h2>Langkah 2: Tonton Video Tutorial</h2>
+        <p>Karena video tidak bisa diputar langsung di sini, silakan klik tombol di bawah untuk belajar cara cepat menemukan ide pokok di YouTube:</p>
+        <div class="video-box">
+            <a href="https://www.youtube.com/watch?v=7ueenx78ta4" target="_blank" class="btn-youtube">
+                ▶ KLIK UNTUK NONTON VIDEO (YOUTUBE)
+            </a>
+            <p style="font-size: 12px; color: #666; margin-top: 10px;">*Setelah menonton, kembalilah ke halaman ini untuk bermain!</p>
         </div>
     </div>
 
     <div class="step">
-        <h2>3. Latihan Gamifikasi</h2>
-        <p>Sudah siap? Bantu Aris memecahkan misteri perpustakaan dengan menemukan ide pokok yang tepat!</p>
+        <h2>Langkah 3: Uji Kemampuanmu</h2>
+        <p>Bantu Aris memecahkan teka-teki buku misterius dengan menjawab ide pokok paragraf dengan benar!</p>
         
         <div id="game-section">
             <button id="btn-start" onclick="mulaiGame()">MULAI TANTANGAN</button>
             
             <div id="game-content" class="hidden">
+                <div style="font-weight: bold; color: #2980b9;">Pertanyaan Ke- <span id="nomor-soal">1</span></div>
                 <div id="paragraf-display" class="paragraf-box"></div>
                 <div id="pilihan-display"></div>
                 <div id="feedback-display" class="feedback"></div>
             </div>
 
-            <div id="finish-display" class="hidden">
-                <h2 style="color: #27ae60;">🎉 Misi Selesai!</h2>
-                <p>Luar biasa! Kamu telah berhasil membantu Aris dan menguasai konsep Ide Pokok.</p>
-                <button onclick="location.reload()">Main Lagi</button>
+            <div id="finish-display" class="hidden" class="finish-card">
+                <h2 style="color: #27ae60; font-size: 30px;">🎉 MISI BERHASIL!</h2>
+                <p>Hebat! Kamu telah menguasai cara menemukan ide pokok paragraf. Ambil screenshot halaman ini sebagai bukti tugasmu!</p>
+                <button onclick="location.reload()" style="background:#3498db; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer;">Main Lagi</button>
             </div>
         </div>
     </div>
@@ -67,18 +76,28 @@
     const dataGame = [
         {
             p: "Di sebuah kota kecil yang tenang, terdapat sebuah perpustakaan tua yang dindingnya tertutup tanaman merambat. Aris, seorang pemuda yang gemar membaca, sering menghabiskan waktunya di sana untuk mencari buku-buku langka. Suatu sore, ia menemukan sebuah buku bersampul kulit hitam tanpa judul yang tampak sangat berbeda.",
-            opsi: ["Tanaman merambat di gedung tua", "Aris menemukan buku misterius di perpustakaan", "Cara merawat perpustakaan tua"],
+            opsi: ["Tanaman merambat di gedung tua", "Aris menemukan buku misterius di perpustakaan", "Cara merawat buku-buku langka"],
             jawaban: 1
         },
         {
             p: "Rasa penasaran membawa Aris membuka halaman pertama buku tersebut. Alih-alih tulisan tinta biasa, lembarannya memancarkan cahaya biru redup yang membentuk kode digital. Di tengah halaman, tertulis instruksi: 'Carilah tiga kata yang hilang di dunia maya'. Aris menyadari buku ini adalah sebuah gerbang teka-teki.",
-            opsi: ["Buku misterius berisi instruksi teka-teki digital", "Cahaya biru di dalam buku", "Rasa penasaran Aris"],
+            opsi: ["Buku misterius tersebut berisi instruksi teka-teki digital", "Cahaya biru di dalam buku tua", "Rasa penasaran Aris yang sangat besar"],
             jawaban: 0
         },
         {
             p: "Tanpa membuang waktu, Aris segera mengeluarkan laptopnya dan mulai menelusuri arsip digital kota. Ia menyadari bahwa perpustakaan itu dulunya pusat komunikasi rahasia. Kode di buku ternyata koordinat GPS rujukan sebuah situs web kuno. Jarinya menari cepat di papan ketik memecahkan enkripsi.",
-            opsi: ["Aris memecahkan kode melalui penelusuran arsip digital", "Sejarah masa perang", "Kegunaan koordinat GPS"],
+            opsi: ["Aris memecahkan kode melalui penelusuran arsip digital", "Sejarah masa perang di kota kecil", "Kegunaan koordinat GPS bagi pemula"],
             jawaban: 0
+        },
+        {
+            p: "Setelah berjam-jam mencoba, sebuah pesan muncul berbunyi: 'Keberanian adalah kunci, namun ketelitian adalah peta'. Aris teringat pada sebuah simbol tua yang terpahat di pintu masuk perpustakaan. Ia memasukkan simbol tersebut sebagai kata sandi terakhir. Tiba-tiba, sebuah laci rahasia terbuka memperlihatkan kunci emas kecil.",
+            opsi: ["Simbol tua di pintu masuk", "Keberhasilan Aris membuka laci rahasia", "Koleksi kunci emas di perpustakaan"],
+            jawaban: 1
+        },
+        {
+            p: "Aris tersenyum puas sambil memegang kunci tersebut. Ia belajar bahwa pengetahuan dari masa lalu dan teknologi masa kini bisa bersatu untuk mengungkap kebenaran. Petualangannya baru saja dimulai, dan ia tahu bahwa setiap paragraf dalam hidupnya kini akan dipenuhi misteri yang menunggu dipecahkan.",
+            opsi: ["Aris berhenti membaca buku", "Pelajaran tentang bersatunya pengetahuan lama dan teknologi", "Kunci emas yang sangat mahal harganya"],
+            jawaban: 1
         }
     ];
 
@@ -97,6 +116,7 @@
             return;
         }
 
+        document.getElementById('nomor-soal').innerText = currentStep + 1;
         document.getElementById('paragraf-display').innerText = dataGame[currentStep].p;
         const displayOpsi = document.getElementById('pilihan-display');
         displayOpsi.innerHTML = "";
@@ -114,11 +134,11 @@
     function cek(dipilih) {
         const fb = document.getElementById('feedback-display');
         if(dipilih === dataGame[currentStep].jawaban) {
-            fb.innerHTML = "<span style='color:green'>✔ Tepat sekali!</span>";
+            fb.innerHTML = "<span style='color:green'>✔ Hebat! Kamu benar.</span>";
             currentStep++;
             setTimeout(tampilkanSoal, 1000);
         } else {
-            fb.innerHTML = "<span style='color:red'>❌ Kurang tepat, ayo coba lagi!</span>";
+            fb.innerHTML = "<span style='color:red'>❌ Belum tepat, coba teliti lagi ya!</span>";
         }
     }
 </script>
