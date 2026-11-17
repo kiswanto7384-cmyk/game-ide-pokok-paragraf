@@ -1,4 +1,4 @@
-[Uploading soal-sma (1).html…]()
+[Uploading soal-sma.html…]()
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -56,7 +56,7 @@ body.nokey .kunci{display:none}
 <div class="wrap">
   <section class="panel noprint">
     <h1>Generator Soal SMA</h1>
-    <p class="sub">Isi topik, pilih jenis soal, lalu buat.</p>
+    <p class="sub">Isi topik, pilih jenis soal, lalu buat. (v2)</p>
 
     <label for="school">Nama sekolah</label>
     <input id="school" placeholder="SMA Negeri ...">
@@ -171,7 +171,19 @@ function parse(t){
   let arr;
   try{arr=JSON.parse(s)}catch(x){throw new Error('JSON dari AI rusak ('+x.message+'). Coba buat lagi.')}
   if(!Array.isArray(arr)) arr=Object.values(arr).find(Array.isArray)||[arr];
-  return arr;
+  return fixAll(arr);
+}
+function fixStr(s){
+  s=s.replace(/\\{2,}/g,'\\')
+     .replace(/\\n(?!(?:eq|e|u|abla|otin|ot|i|eg|less|gtr|leq|geq|mid|parallel|ewline)(?![a-zA-Z]))/g,'\n')
+     .replace(/\\-/g,'-');
+  return s.split(/(\\\([\s\S]*?\\\))/).map((p,i)=>i%2?p:(/[\\^_]/.test(p)?tex2txt(p):p)).join('');
+}
+function fixAll(v,k){
+  if(typeof v==='string') return k==='gambar_svg'?v:fixStr(v);
+  if(Array.isArray(v)) return v.map(x=>fixAll(x,k));
+  if(v&&typeof v==='object'){const o={};for(const x in v)o[x]=fixAll(v[x],x);return o}
+  return v;
 }
 function fig(q){
   const s=(q.gambar_svg||'').trim();
@@ -179,7 +191,7 @@ function fig(q){
 }
 function soalHtml(q,k,N,no){
   let m=(q.stimulus?'<p class="st">'+e(q.stimulus)+'</p>':'')+'<p>'+e(q.pertanyaan)+'</p>';
-  if(k==='pg'||k==='pgk') m+='<ul class="op">'+(q.opsi||[]).slice(0,N).map((o,i)=>'<li><span>'+'ABCDE'[i]+'.</span><span>'+e(o)+'</span></li>').join('')+'</ul>';
+  if(k==='pg'||k==='pgk') m+='<ul class="op">'+(q.opsi||[]).slice(0,N).map((o,i)=>'<li><span>'+'ABCDE'[i]+'.</span><span>'+e(String(o).replace(/^\s*[A-Ea-e][.)]\s+/,''))+'</span></li>').join('')+'</ul>';
   if(k==='bs') m+='<table class="bs"><tr><th>Pernyataan</th><th>Benar</th><th>Salah</th></tr>'+(q.pernyataan||[]).map(p=>'<tr><td>'+e(p.teks)+'</td><td>☐</td><td>☐</td></tr>').join('')+'</table>';
   if(k==='is') m+='<p>Jawaban: ........................................</p>';
   if(k==='es') m+='<p>(Skor '+e(q.skor||5)+')</p>';
@@ -204,6 +216,7 @@ async function gen(){
     const mk=(c,part)=>'Buat '+c+' soal '+T[k].label+' mata pelajaran '+mapel+' kelas '+kelas+' SMA dengan topik/bab: '+topik+'. Jenis ujian: '+ujian+'. Tingkat: '+tingkat+'. '
       +(part?'Ini bagian ke-'+part+', pilih subtopik yang berbeda-beda. ':'')
       +((k==='pg'||k==='pgk')?'Jumlah opsi tepat '+N+' (A sampai '+'ABCDE'[N-1]+'), sebar kunci jawaban merata. ':'')
+      +(k==='bs'?'Untuk setiap soal, isi "pernyataan" dengan 3 atau 4 kalimat pernyataan lengkap (field teks berisi kalimat pernyataan itu, BUKAN kata Benar atau Salah), dan field benar berisi true atau false. Isi "pertanyaan" hanya dengan perintah umum, misalnya Tentukan benar atau salahnya setiap pernyataan berikut. ':'')
       +'Balas berupa JSON array walaupun hanya satu soal. Stimulus (teks, data, atau tabel singkat) boleh diisi bila membantu. '
       +($('#useImg').checked?'Isi gambar_svg hanya bila gambar benar-benar membantu (grafik, diagram, bangun); buat SVG sederhana dengan viewBox, garis hitam di latar putih, teks seminimal mungkin; selain itu isi string kosong. ':'Selalu isi gambar_svg dengan string kosong. ')
       +'Format tiap objek: '+T[k].sc;
@@ -230,7 +243,9 @@ function tex2txt(s){
   const SUP={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','+':'⁺','-':'⁻','n':'ⁿ','x':'ˣ','(':'⁽',')':'⁾'};
   const SUB={'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉','+':'₊','-':'₋','(':'₍',')':'₎'};
   const SYM={times:'×',cdot:'·',div:'÷',pm:'±',mp:'∓',leq:'≤',le:'≤',geq:'≥',ge:'≥',neq:'≠',ne:'≠',approx:'≈',infty:'∞',
-    pi:'π',alpha:'α',beta:'β',gamma:'γ',theta:'θ',lambda:'λ',mu:'μ',sigma:'σ',omega:'ω',phi:'φ',Delta:'Δ',delta:'δ',Omega:'Ω',
+    pi:'π',alpha:'α',beta:'β',gamma:'γ',theta:'θ',lambda:'λ',mu:'μ',sigma:'σ',omega:'ω',phi:'φ',varphi:'φ',Delta:'Δ',delta:'δ',Omega:'Ω',
+    rho:'ρ',tau:'τ',epsilon:'ε',varepsilon:'ε',eta:'η',nu:'ν',kappa:'κ',zeta:'ζ',psi:'ψ',xi:'ξ',Sigma:'Σ',Phi:'Φ',Psi:'Ψ',Gamma:'Γ',Lambda:'Λ',Theta:'Θ',Pi:'Π',
+    partial:'∂',propto:'∝',equiv:'≡',ldots:'…',dots:'…',cdots:'⋯',degree:'°',
     rightarrow:'→',to:'→',Rightarrow:'⇒',circ:'°',sum:'Σ',int:'∫',left:'',right:'',quad:' ',qquad:'  ',
     sin:'sin',cos:'cos',tan:'tan',log:'log',ln:'ln',lim:'lim',in:'∈',cup:'∪',cap:'∩',subset:'⊂',forall:'∀',exists:'∃',
     ',':' ',';':' ','%':'%',' ':' '};
@@ -242,6 +257,9 @@ function tex2txt(s){
     s=s.replace(/\\sqrt\s*\[([^\]]*)\]\s*\{([^{}]*)\}/g,'$1√($2)');
     s=s.replace(/\\sqrt\s*\{([^{}]*)\}/g,'√($1)');
     s=s.replace(/\\(?:text|mathrm|mathbf|textbf)\s*\{([^{}]*)\}/g,'$1');
+    s=s.replace(/\\(?:bar|overline)\s*\{([^{}]*)\}/g,'$1\u0304');
+    s=s.replace(/\\vec\s*\{([^{}]*)\}/g,'$1\u20d7');
+    s=s.replace(/\^\s*(?:\{\s*\\circ\s*\}|\\circ)/g,'°');
   }while(s!==p);
   s=s.replace(/\\([a-zA-Z]+|[,; %])/g,(m,c)=>Object.prototype.hasOwnProperty.call(SYM,c)?SYM[c]:c);
   const map=(t,M)=>[...t].every(c=>c in M)?[...t].map(c=>M[c]).join(''):null;
@@ -253,6 +271,8 @@ function dlWord(){
   if(!state.soal){st('Buat soal dulu.');return}
   const body=(state.soal+($('#showKey').checked?state.kunci:''))
     .replace(/<svg[\s\S]*?<\/svg>/g,'')
+    .replace(/<div class="no">(\d+\.)<\/div><div class="main">(<p[^>]*>)/g,'<div class="main">$2$1 ')
+    .replace(/<\/span><span>/g,'</span>&nbsp;&nbsp;<span>')
     .replace(/\\\(([\s\S]*?)\\\)/g,(m,t)=>tex2txt(t))
     .replace(/\n/g,'<br>');
   const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><style>body{font-family:"Times New Roman";font-size:12pt}.kop{text-align:center}.bs td,.bs th{border:1px solid #000;padding:2px 8px}.op{list-style:none;padding-left:20px}.no{display:inline}</style></head><body>'+body+'</body></html>';
