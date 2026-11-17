@@ -93,6 +93,7 @@ body.nokey .kunci{display:none}
       <button class="alt" id="doc">Unduh Word</button>
     </div>
     <label style="display:flex;gap:6px;align-items:center;margin-top:10px"><input id="showKey" type="checkbox" checked style="width:auto"> Sertakan kunci dan pembahasan</label>
+    <label style="display:flex;gap:6px;align-items:center;margin-top:6px"><input id="useImg" type="checkbox" style="width:auto"> Buat gambar dengan AI (lebih boros token)</label>
     <p id="status" role="status"></p>
 
     <details>
@@ -128,19 +129,28 @@ const SYS='Anda guru SMA berpengalaman di Indonesia yang menyusun soal sesuai Ku
 
 ['school','key','model','ep'].forEach(id=>{$('#'+id).value=LS.get(id);$('#'+id).addEventListener('input',()=>LS.set(id,$('#'+id).value.trim()))});
 
+const wait=ms=>new Promise(z=>setTimeout(z,ms));
 async function ask(prompt){
-  const r=await fetch(LS.get('ep')||'https://api.groq.com/openai/v1/chat/completions',{method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':'Bearer '+LS.get('key')},
-    body:JSON.stringify({model:LS.get('model')||'openai/gpt-oss-120b',temperature:0.6,max_tokens:8000,messages:[{role:'system',content:SYS},{role:'user',content:prompt}]})});
-  if(!r.ok){
-    let d='';
-    try{const b=await r.json();d=(b.error&&b.error.message)||''}catch(x){}
-    throw new Error('API menolak permintaan (kode '+r.status+')'+(d?': '+d:'')+'. Periksa API key, model, dan alamat API.');
+  for(let i=0;;i++){
+    const r=await fetch(LS.get('ep')||'https://api.groq.com/openai/v1/chat/completions',{method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+LS.get('key')},
+      body:JSON.stringify({model:LS.get('model')||'openai/gpt-oss-120b',temperature:0.6,max_tokens:6000,messages:[{role:'system',content:SYS},{role:'user',content:prompt}]})});
+    if(!r.ok){
+      let d='';
+      try{const b=await r.json();d=(b.error&&b.error.message)||''}catch(x){}
+      if(r.status===429&&i<5){
+        const m=d.match(/try again in (?:(\d+)m)?\s*([\d.]+)(ms|s)/i);
+        const w=Math.min(75,Math.ceil(m?(+(m[1]||0))*60+parseFloat(m[2])*(m[3]==='ms'?0.001:1):20)+2);
+        for(let s=w;s>0;s--){st('Batas token per menit tercapai. Menunggu '+s+' detik, lalu dicoba lagi otomatis...');await wait(1000)}
+        continue;
+      }
+      throw new Error('API menolak permintaan (kode '+r.status+')'+(d?': '+d:'')+'. Periksa API key, model, dan alamat API.');
+    }
+    const j=await r.json();
+    const c=j.choices[0];
+    if(c.finish_reason==='length') throw new Error('Jawaban AI terpotong karena terlalu panjang. Kurangi jumlah soal per jenis lalu coba lagi.');
+    return c.message.content||'';
   }
-  const j=await r.json();
-  const c=j.choices[0];
-  if(c.finish_reason==='length') throw new Error('Jawaban AI terpotong karena terlalu panjang. Kurangi jumlah soal per jenis lalu coba lagi.');
-  return c.message.content||'';
 }
 function fixEsc(s){
   return s.replace(/\\(["\\\/]|u[0-9a-fA-F]{4}|[nrtbf])|\\/g,(m,c,off,str)=>{
@@ -191,11 +201,18 @@ async function gen(){
   for(const k of Object.keys(T)){
     const n=+$('#n_'+k).value||0; if(!n) continue;
     st('Membuat soal '+T[k].label+'...');
-    const p='Buat '+n+' soal '+T[k].label+' mata pelajaran '+mapel+' kelas '+kelas+' SMA dengan topik/bab: '+topik+'. Jenis ujian: '+ujian+'. Tingkat: '+tingkat+'. '
+    const mk=(c,part)=>'Buat '+c+' soal '+T[k].label+' mata pelajaran '+mapel+' kelas '+kelas+' SMA dengan topik/bab: '+topik+'. Jenis ujian: '+ujian+'. Tingkat: '+tingkat+'. '
+      +(part?'Ini bagian ke-'+part+', pilih subtopik yang berbeda-beda. ':'')
       +((k==='pg'||k==='pgk')?'Jumlah opsi tepat '+N+' (A sampai '+'ABCDE'[N-1]+'), sebar kunci jawaban merata. ':'')
-      +'Balas berupa JSON array walaupun hanya satu soal. Stimulus (teks, data, atau tabel singkat) boleh diisi bila membantu. Isi gambar_svg hanya bila gambar benar-benar membantu (grafik, diagram, bangun); buat SVG sederhana dengan viewBox, garis hitam di latar putih, teks seminimal mungkin; selain itu isi string kosong. Format tiap objek: '+T[k].sc;
+      +'Balas berupa JSON array walaupun hanya satu soal. Stimulus (teks, data, atau tabel singkat) boleh diisi bila membantu. '
+      +($('#useImg').checked?'Isi gambar_svg hanya bila gambar benar-benar membantu (grafik, diagram, bangun); buat SVG sederhana dengan viewBox, garis hitam di latar putih, teks seminimal mungkin; selain itu isi string kosong. ':'Selalu isi gambar_svg dengan string kosong. ')
+      +'Format tiap objek: '+T[k].sc;
     try{
-      const arr=parse(await ask(p));
+      let arr=[];
+      for(let left=n,part=1;left>0;left-=5,part++){
+        st('Membuat soal '+T[k].label+' ('+arr.length+' dari '+n+' selesai)...');
+        arr=arr.concat(parse(await ask(mk(Math.min(5,left),n>5?part:0))));
+      }
       const h='<h3>'+String.fromCharCode(65+sec)+'. '+T[k].label+'</h3>';
       soal+=h;kunci+=h;sec++;
       arr.forEach(q=>{no++;soal+=soalHtml(q,k,N,no);kunci+=kunciHtml(q,k,no)});
