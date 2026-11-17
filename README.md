@@ -1,4 +1,4 @@
-[soal-sma (2).html](https://github.com/user-attachments/files/34970797/soal-sma.2.html)
+[Uploading soal-sma.html…]()
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -142,16 +142,26 @@ async function ask(prompt){
   if(c.finish_reason==='length') throw new Error('Jawaban AI terpotong karena terlalu panjang. Kurangi jumlah soal per jenis lalu coba lagi.');
   return c.message.content||'';
 }
+function fixEsc(s){
+  return s.replace(/\\(["\\\/]|u[0-9a-fA-F]{4}|[nrtbf])|\\/g,(m,c,off,str)=>{
+    if(!c) return '\\\\';
+    if(c.length>1||c==='"'||c==='\\'||c==='/') return m;
+    const nx=str.slice(off+2);
+    if(c==='n') return /^(?:eq|e|u|eg|abla|otin|ot|i|less|gtr|leq|geq|mid|parallel)(?![a-zA-Z])/.test(nx)?'\\\\n':m;
+    return /^[a-zA-Z]/.test(nx)?'\\\\'+c:m;
+  });
+}
 function parse(t){
   t=String(t||'').replace(/```(?:json)?/gi,'');
   const a=t.search(/[\[{]/);
   if(a<0) throw new Error('Jawaban AI bukan JSON. Awal jawaban: '+t.trim().slice(0,120));
   const b=t.lastIndexOf(t[a]==='['?']':'}');
   if(b<a) throw new Error('Jawaban AI tidak lengkap (terpotong). Kurangi jumlah soal lalu coba lagi.');
-  let s=t.slice(a,b+1),arr;
-  try{arr=JSON.parse(s)}catch(x){arr=JSON.parse(s.replace(/\\(?!["\\\/bfnrtu])/g,'\\\\'))}
+  const s=fixEsc(t.slice(a,b+1).replace(/[\u0000-\u001f]+/g,' '));
+  let arr;
+  try{arr=JSON.parse(s)}catch(x){throw new Error('JSON dari AI rusak ('+x.message+'). Coba buat lagi.')}
   if(!Array.isArray(arr)) arr=Object.values(arr).find(Array.isArray)||[arr];
-  return JSON.parse(JSON.stringify(arr),(k,v)=>typeof v==='string'?v.replace(/\f/g,'\\f').replace(/\x08/g,'\\b').replace(/\r/g,'\\r').replace(/\t/g,'\\t'):v);
+  return arr;
 }
 function fig(q){
   const s=(q.gambar_svg||'').trim();
