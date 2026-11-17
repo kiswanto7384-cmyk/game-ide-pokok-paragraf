@@ -1,4 +1,4 @@
-[Uploading soal-sma.html…]()
+[Uploading soal-sma (1).html…]()
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -226,9 +226,35 @@ async function gen(){
   if(window.MathJax&&MathJax.typesetPromise) MathJax.typesetPromise([$('#paper')]);
   st(no+' soal selesai dibuat.');
 }
+function tex2txt(s){
+  const SUP={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','+':'⁺','-':'⁻','n':'ⁿ','x':'ˣ','(':'⁽',')':'⁾'};
+  const SUB={'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉','+':'₊','-':'₋','(':'₍',')':'₎'};
+  const SYM={times:'×',cdot:'·',div:'÷',pm:'±',mp:'∓',leq:'≤',le:'≤',geq:'≥',ge:'≥',neq:'≠',ne:'≠',approx:'≈',infty:'∞',
+    pi:'π',alpha:'α',beta:'β',gamma:'γ',theta:'θ',lambda:'λ',mu:'μ',sigma:'σ',omega:'ω',phi:'φ',Delta:'Δ',delta:'δ',Omega:'Ω',
+    rightarrow:'→',to:'→',Rightarrow:'⇒',circ:'°',sum:'Σ',int:'∫',left:'',right:'',quad:' ',qquad:'  ',
+    sin:'sin',cos:'cos',tan:'tan',log:'log',ln:'ln',lim:'lim',in:'∈',cup:'∪',cap:'∩',subset:'⊂',forall:'∀',exists:'∃',
+    ',':' ',';':' ','%':'%',' ':' '};
+  let p;
+  do{
+    p=s;
+    s=s.replace(/\\[dt]?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}/g,(m,a,b)=>{
+      const w=x=>/^[\w.]+$/.test(x)?x:'('+x+')';return w(a)+'/'+w(b)});
+    s=s.replace(/\\sqrt\s*\[([^\]]*)\]\s*\{([^{}]*)\}/g,'$1√($2)');
+    s=s.replace(/\\sqrt\s*\{([^{}]*)\}/g,'√($1)');
+    s=s.replace(/\\(?:text|mathrm|mathbf|textbf)\s*\{([^{}]*)\}/g,'$1');
+  }while(s!==p);
+  s=s.replace(/\\([a-zA-Z]+|[,; %])/g,(m,c)=>Object.prototype.hasOwnProperty.call(SYM,c)?SYM[c]:c);
+  const map=(t,M)=>[...t].every(c=>c in M)?[...t].map(c=>M[c]).join(''):null;
+  s=s.replace(/\^\{([^{}]*)\}|\^(\S)/g,(m,a,b)=>{const t=a!=null?a:b;return map(t,SUP)||'^('+t+')'});
+  s=s.replace(/_\{([^{}]*)\}|_(\S)/g,(m,a,b)=>{const t=a!=null?a:b;return map(t,SUB)||'_('+t+')'});
+  return s.replace(/[{}]/g,'');
+}
 function dlWord(){
   if(!state.soal){st('Buat soal dulu.');return}
-  const body=(state.soal+($('#showKey').checked?state.kunci:'')).replace(/<svg[\s\S]*?<\/svg>/g,'');
+  const body=(state.soal+($('#showKey').checked?state.kunci:''))
+    .replace(/<svg[\s\S]*?<\/svg>/g,'')
+    .replace(/\\\(([\s\S]*?)\\\)/g,(m,t)=>tex2txt(t))
+    .replace(/\n/g,'<br>');
   const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><style>body{font-family:"Times New Roman";font-size:12pt}.kop{text-align:center}.bs td,.bs th{border:1px solid #000;padding:2px 8px}.op{list-style:none;padding-left:20px}.no{display:inline}</style></head><body>'+body+'</body></html>';
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob(['\ufeff',html],{type:'application/msword'}));
