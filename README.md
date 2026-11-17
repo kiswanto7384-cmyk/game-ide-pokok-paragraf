@@ -1,4 +1,4 @@
-[soal-sma (1).html](https://github.com/user-attachments/files/34970511/soal-sma.1.html)
+[soal-sma (2).html](https://github.com/user-attachments/files/34970797/soal-sma.2.html)
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -131,20 +131,26 @@ const SYS='Anda guru SMA berpengalaman di Indonesia yang menyusun soal sesuai Ku
 async function ask(prompt){
   const r=await fetch(LS.get('ep')||'https://api.groq.com/openai/v1/chat/completions',{method:'POST',
     headers:{'Content-Type':'application/json','Authorization':'Bearer '+LS.get('key')},
-    body:JSON.stringify({model:LS.get('model')||'openai/gpt-oss-120b',temperature:0.6,messages:[{role:'system',content:SYS},{role:'user',content:prompt}]})});
+    body:JSON.stringify({model:LS.get('model')||'openai/gpt-oss-120b',temperature:0.6,max_tokens:8000,messages:[{role:'system',content:SYS},{role:'user',content:prompt}]})});
   if(!r.ok){
     let d='';
     try{const b=await r.json();d=(b.error&&b.error.message)||''}catch(x){}
     throw new Error('API menolak permintaan (kode '+r.status+')'+(d?': '+d:'')+'. Periksa API key, model, dan alamat API.');
   }
   const j=await r.json();
-  return j.choices[0].message.content;
+  const c=j.choices[0];
+  if(c.finish_reason==='length') throw new Error('Jawaban AI terpotong karena terlalu panjang. Kurangi jumlah soal per jenis lalu coba lagi.');
+  return c.message.content||'';
 }
 function parse(t){
-  const a=t.indexOf('['),b=t.lastIndexOf(']');
-  if(a<0||b<0) throw new Error('Jawaban AI bukan JSON. Coba buat lagi.');
+  t=String(t||'').replace(/```(?:json)?/gi,'');
+  const a=t.search(/[\[{]/);
+  if(a<0) throw new Error('Jawaban AI bukan JSON. Awal jawaban: '+t.trim().slice(0,120));
+  const b=t.lastIndexOf(t[a]==='['?']':'}');
+  if(b<a) throw new Error('Jawaban AI tidak lengkap (terpotong). Kurangi jumlah soal lalu coba lagi.');
   let s=t.slice(a,b+1),arr;
   try{arr=JSON.parse(s)}catch(x){arr=JSON.parse(s.replace(/\\(?!["\\\/bfnrtu])/g,'\\\\'))}
+  if(!Array.isArray(arr)) arr=Object.values(arr).find(Array.isArray)||[arr];
   return JSON.parse(JSON.stringify(arr),(k,v)=>typeof v==='string'?v.replace(/\f/g,'\\f').replace(/\x08/g,'\\b').replace(/\r/g,'\\r').replace(/\t/g,'\\t'):v);
 }
 function fig(q){
@@ -177,7 +183,7 @@ async function gen(){
     st('Membuat soal '+T[k].label+'...');
     const p='Buat '+n+' soal '+T[k].label+' mata pelajaran '+mapel+' kelas '+kelas+' SMA dengan topik/bab: '+topik+'. Jenis ujian: '+ujian+'. Tingkat: '+tingkat+'. '
       +((k==='pg'||k==='pgk')?'Jumlah opsi tepat '+N+' (A sampai '+'ABCDE'[N-1]+'), sebar kunci jawaban merata. ':'')
-      +'Stimulus (teks, data, atau tabel singkat) boleh diisi bila membantu. Isi gambar_svg hanya bila gambar benar-benar membantu (grafik, diagram, bangun); buat SVG sederhana dengan viewBox, garis hitam di latar putih, teks seminimal mungkin; selain itu isi string kosong. Format tiap objek: '+T[k].sc;
+      +'Balas berupa JSON array walaupun hanya satu soal. Stimulus (teks, data, atau tabel singkat) boleh diisi bila membantu. Isi gambar_svg hanya bila gambar benar-benar membantu (grafik, diagram, bangun); buat SVG sederhana dengan viewBox, garis hitam di latar putih, teks seminimal mungkin; selain itu isi string kosong. Format tiap objek: '+T[k].sc;
     try{
       const arr=parse(await ask(p));
       const h='<h3>'+String.fromCharCode(65+sec)+'. '+T[k].label+'</h3>';
