@@ -1,3 +1,4 @@
+[soal-sma (1).html](https://github.com/user-attachments/files/34970511/soal-sma.1.html)
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -99,7 +100,7 @@ body.nokey .kunci{display:none}
       <label for="key">API key</label>
       <input id="key" type="password" autocomplete="off" placeholder="Tempel API key Anda">
       <label for="model">Model</label>
-      <input id="model" placeholder="llama-3.3-70b-versatile">
+      <input id="model" placeholder="openai/gpt-oss-120b">
       <label for="ep">Alamat API</label>
       <input id="ep" placeholder="https://api.groq.com/openai/v1/chat/completions">
       <p class="sub" style="margin-top:6px">Disimpan hanya di browser ini, tidak dikirim ke repo.</p>
@@ -130,8 +131,12 @@ const SYS='Anda guru SMA berpengalaman di Indonesia yang menyusun soal sesuai Ku
 async function ask(prompt){
   const r=await fetch(LS.get('ep')||'https://api.groq.com/openai/v1/chat/completions',{method:'POST',
     headers:{'Content-Type':'application/json','Authorization':'Bearer '+LS.get('key')},
-    body:JSON.stringify({model:LS.get('model')||'llama-3.3-70b-versatile',temperature:0.6,messages:[{role:'system',content:SYS},{role:'user',content:prompt}]})});
-  if(!r.ok) throw new Error('API menolak permintaan (kode '+r.status+'). Periksa API key dan model.');
+    body:JSON.stringify({model:LS.get('model')||'openai/gpt-oss-120b',temperature:0.6,messages:[{role:'system',content:SYS},{role:'user',content:prompt}]})});
+  if(!r.ok){
+    let d='';
+    try{const b=await r.json();d=(b.error&&b.error.message)||''}catch(x){}
+    throw new Error('API menolak permintaan (kode '+r.status+')'+(d?': '+d:'')+'. Periksa API key, model, dan alamat API.');
+  }
   const j=await r.json();
   return j.choices[0].message.content;
 }
